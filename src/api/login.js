@@ -1,9 +1,9 @@
 import axios from 'axios';
+import { setToken } from 'utils/token';
 
+async function loginRequest(username, password) {
 
-function LoginRequest(username, password) {
-
-    axios.request({
+    return axios.request({
         url: 'http://127.0.0.1:8000/auth-token/',
         data:{
             username: username,
@@ -13,13 +13,16 @@ function LoginRequest(username, password) {
         method: 'POST',
     })
     .then(response => {
-        alert("FUCK YES BITCH");
-        return response;
+        if (!response.data.token) {
+            return false;
+        }
+        setToken(response.data.token);
+        return true;
     })
     .catch(error =>{
-        alert(error);
+        return false
     });
-
 }
 
-export default LoginRequest;
+
+export default loginRequest;

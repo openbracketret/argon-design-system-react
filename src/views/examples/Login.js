@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { useState } from "react";
 
 // reactstrap components
 import {
@@ -37,17 +37,30 @@ import {
 // core components
 import DemoNavbar from "components/Navbars/DemoNavbar.js";
 import SimpleFooter from "components/Footers/SimpleFooter.js";
-import LoginRequest from "api/login";
+import loginRequest from "api/login";
 
 class Login extends React.Component {
+  
   componentDidMount() {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     this.refs.main.scrollTop = 0;
   }
 
-  handleClick = () => {
-    LoginRequest("admin", "admin");
+  constructor(props) {
+    super(props);
+    this.state = { username: '', password: ''}
+  }
+
+  handleClick = async e => {
+    e.preventDefault();
+    const loginSuccessful = await loginRequest(this.state.username, this.state.password);
+    console.log(loginSuccessful);
+    if (loginSuccessful == true) {
+      console.log("Login successful");
+    } else {
+      console.log("Login failed");
+    }
   }
 
   render() {
@@ -83,7 +96,7 @@ class Login extends React.Component {
                                 <i className="ni ni-email-83" />
                               </InputGroupText>
                             </InputGroupAddon>
-                            <Input placeholder="Email" type="email" />
+                            <Input placeholder="Username" type="username" onChange={ e => this.setState({username: e.target.value}) }/>
                           </InputGroup>
                         </FormGroup>
                         <FormGroup>
@@ -97,6 +110,7 @@ class Login extends React.Component {
                               placeholder="Password"
                               type="password"
                               autoComplete="off"
+                              onChange={ e => this.setState({password: e.target.value}) }
                             />
                           </InputGroup>
                         </FormGroup>
@@ -118,7 +132,7 @@ class Login extends React.Component {
                             className="my-4"
                             color="primary"
                             type="button"
-                            onClick={this.handleClick}
+                            onClick={ (e) => this.handleClick(e)}
                           >
                             Sign in
                           </Button>
